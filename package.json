@@ -22,8 +22,7 @@
   },
   "homepage": "https://github.com/kevcomedia/voting-app#readme",
   "dependencies": {
-    "express": "^4.16.2",
-    "nodemon": "^1.17.1"
+    "express": "^4.16.2"
   },
   "devDependencies": {
     "chai": "^4.1.2",
@@ -33,6 +32,7 @@
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-prettier": "^2.6.0",
     "mocha": "^5.0.1",
+    "nodemon": "^1.17.1",
     "prettier": "^1.11.1"
   }
 }
