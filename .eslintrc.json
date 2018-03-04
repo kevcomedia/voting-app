@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "google",
+    "prettier"
+  ],
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 8
+  },
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": "error"
+  }
+}
