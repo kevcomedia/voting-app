@@ -1,3 +1,4 @@
+const async = require('async');
 const {expect} = require('chai');
 const request = require('..');
 
@@ -39,6 +40,52 @@ describe('User registration', function() {
       expect(response.body)
         .to.have.property('token')
         .that.matches(/^[0-9A-Za-z\-_]+\.[0-9A-Za-z\-_]+\.[0-9A-Za-z\-_]+/);
+    });
+  });
+
+  describe('Duplicate username', function() {
+    let error;
+
+    before(function(done) {
+      async.series(
+        [
+          callback => {
+            request()
+              .post('/api/v1/register')
+              .send({username: 'newuser', password: 'new-password'})
+              .end(callback);
+          },
+          callback => {
+            request()
+              .post('/api/v1/register')
+              .send({username: 'newuser', password: 'new-password'})
+              .end((err, res) => {
+                error = err;
+              });
+          },
+        ],
+        done
+      );
+    });
+
+    it('has status code 422', function() {
+      expect(error).to.have.status(422);
+    });
+
+    it('should be a JSON', function() {
+      expect(error).to.be.a.json;
+    });
+
+    it('contains a `success` property set to `false`', function() {
+      expect(error.body)
+        .to.have.property('success')
+        .that.equals('false');
+    });
+
+    it('contains a "Username taken" message', function() {
+      expect(error.body)
+        .to.have.property('message')
+        .that.equals('Username is already taken');
     });
   });
 });
