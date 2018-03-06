@@ -23,6 +23,7 @@
   "homepage": "https://github.com/kevcomedia/voting-app#readme",
   "dependencies": {
     "async": "^2.6.0",
+    "bcrypt": "^1.0.3",
     "express": "^4.16.2",
     "mongoose": "^5.0.8"
   },
@@ -35,6 +36,7 @@
     "eslint-plugin-prettier": "^2.6.0",
     "mocha": "^5.0.1",
     "nodemon": "^1.17.1",
-    "prettier": "^1.11.1"
+    "prettier": "^1.11.1",
+    "sinon": "^4.4.2"
   }
 }
