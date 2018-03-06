@@ -3,12 +3,14 @@ const {expect} = require('chai');
 const request = require('..');
 
 describe('User registration', function() {
+  const registerEndpoint = '/api/v1/register';
+
   describe('Successful registration', function() {
     let response;
 
     before(function(done) {
       request()
-        .post('/api/v1/register')
+        .post(registerEndpoint)
         .send({username: 'newuser', password: 'new-password'})
         .end((err, res) => {
           response = res;
@@ -51,13 +53,13 @@ describe('User registration', function() {
         [
           callback => {
             request()
-              .post('/api/v1/register')
+              .post(registerEndpoint)
               .send({username: 'newuser', password: 'new-password'})
               .end(callback);
           },
           callback => {
             request()
-              .post('/api/v1/register')
+              .post(registerEndpoint)
               .send({username: 'newuser', password: 'new-password'})
               .end((err, res) => {
                 error = err;
@@ -86,6 +88,74 @@ describe('User registration', function() {
       expect(error.body)
         .to.have.property('message')
         .that.equals('Username is already taken');
+    });
+  });
+
+  describe('Password less than 10 characters', function() {
+    let error;
+
+    before(function(done) {
+      request()
+        .post(registerEndpoint)
+        .send({username: 'newUser', password: '123456789'})
+        .end((err, res) => {
+          error = err;
+          done();
+        });
+    });
+
+    it('has status code 422', function() {
+      expect(error).to.have.status(422);
+    });
+
+    it('should be a JSON', function() {
+      expect(error).to.be.a.json;
+    });
+
+    it('contains a `success` property set to `false`', function() {
+      expect(error.body)
+        .to.have.property('success')
+        .that.equals('false');
+    });
+
+    it('contains a "Password is too short" message', function() {
+      expect(error.body)
+        .to.have.property('message')
+        .that.equals('Password should be at least 10 characters long');
+    });
+  });
+
+  describe('Username is blank', function() {
+    let error;
+
+    before(function(done) {
+      request()
+        .post(registerEndpoint)
+        .send({username: '', password: 'new-password'})
+        .end((err, res) => {
+          error = err;
+          done();
+        });
+    });
+
+    it('has status code 422', function() {
+      expect(error).to.have.status(422);
+    });
+
+    it('should be a JSON', function() {
+      expect(error).to.be.a.json;
+    });
+
+    it('contains a `success` property set to `false`', function() {
+      expect(error.body)
+        .to.have.property('success')
+        .that.equals('false');
+    });
+
+    it('contains a "Blank username" message', function() {
+      expect(error.body)
+        .to.have.property('message')
+        .that.equals('Username cannot be blank');
     });
   });
 });
