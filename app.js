@@ -1,7 +1,11 @@
 const express = require('express');
+const passport = require('passport');
 const api = require('./routes');
 
 const app = express();
+
+app.use(passport.initialize());
+require('./config/passport');
 
 app.use('/', api);
 
