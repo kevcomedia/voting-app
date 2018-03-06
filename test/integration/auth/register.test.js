@@ -1,9 +1,17 @@
 const async = require('async');
 const {expect} = require('chai');
 const request = require('..');
+const User = require('../../../models/user.model');
 
 describe('User registration', function() {
   const registerEndpoint = '/api/v1/register';
+
+  function dropUsers(done) {
+    User.remove({}, done);
+  }
+
+  before(dropUsers);
+  afterEach(dropUsers);
 
   describe('Successful registration', function() {
     let response;
