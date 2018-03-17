@@ -18,6 +18,10 @@ function register(req, res, next) {
     });
 }
 
+function login(req, res, next) {
+  res.status(500).send('Not implemented');
+}
+
 // Probably move this to some util directory. That way this can be tested.
 function signJwt(payload = {}) {
   return new Promise(function(resolve, reject) {
@@ -34,4 +38,5 @@ function signJwt(payload = {}) {
 
 module.exports = {
   register,
+  login,
 };
