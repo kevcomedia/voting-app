@@ -23,6 +23,12 @@ userSchema.pre('save', function(next) {
 });
 
 userSchema.statics.createUser = function({username, password} = {}) {
+  if (!username) {
+    const err = new Error('Username cannot be blank');
+    err.name = 'UsernameBlankError';
+    return Promise.reject(err);
+  }
+
   return this.findOne({username}).then(existingUser => {
     if (existingUser) {
       const err = new Error('Username is already taken');
