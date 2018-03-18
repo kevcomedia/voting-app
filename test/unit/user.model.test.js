@@ -81,4 +81,87 @@ describe('User model', function() {
       });
     });
   });
+
+  describe('User.authenticate', function() {
+    it('returns the user document if the credentials are correct', function(done) {
+      const dummyCredentials = {
+        username: 'dummy',
+        password: 'sample-password',
+      };
+      const expectedValue = {
+        username: 'dummy',
+        password: 'hashed-password-123',
+        // I'm not sure how to deal with situations where a document method is
+        // used
+        isCorrectPassword() {
+          return true;
+        },
+      };
+
+      const findStub = sinon.stub(User, 'findOne').resolves(expectedValue);
+      User.authenticate(dummyCredentials)
+        .then(result => {
+          sinon.assert.calledWith(findStub, {
+            username: dummyCredentials.username,
+          });
+          expect(result).to.equal(expectedValue);
+
+          User.findOne.restore();
+          done();
+        })
+        .catch(done);
+    });
+
+    it('throws an error if the username is incorrect', function(done) {
+      const dummyCredentials = {
+        username: 'wrong-username',
+        password: 'sample-password',
+      };
+
+      const findStub = sinon.stub(User, 'findOne').resolves(null);
+      User.authenticate(dummyCredentials)
+        .catch(err => {
+          sinon.assert.calledWith(findStub, {
+            username: dummyCredentials.username,
+          });
+
+          expect(err)
+            .to.be.an('error')
+            .that.has.property('name')
+            .that.equals('InvalidCredentialsError');
+
+          User.findOne.restore();
+          done();
+        })
+        .catch(done);
+    });
+
+    it('throws an error if the password is incorrect', function(done) {
+      const dummyCredentials = {
+        username: 'dummy',
+        password: 'wrong-password',
+      };
+
+      const findStub = sinon.stub(User, 'findOne').resolves({
+        isCorrectPassword() {
+          return false;
+        },
+      });
+      User.authenticate(dummyCredentials)
+        .catch(err => {
+          sinon.assert.calledWith(findStub, {
+            username: dummyCredentials.username,
+          });
+
+          expect(err)
+            .to.be.an('error')
+            .that.has.property('name')
+            .that.equals('InvalidCredentialsError');
+
+          User.findOne.restore();
+          done();
+        })
+        .catch(done);
+    });
+  });
 });
