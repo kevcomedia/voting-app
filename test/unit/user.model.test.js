@@ -64,7 +64,7 @@ describe('User model', function() {
             password: Array.from({length}, () => 'a').join(''),
           };
 
-          const stub = sinon.stub(User, 'findOne').resolves(null);
+          sinon.stub(User, 'findOne').resolves(null);
 
           User.createUser(dummyUserInfo)
             .catch(err => {

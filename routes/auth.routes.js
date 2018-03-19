@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const authController = require('../controllers/auth.controller');
 
+// eslint-disable-next-line new-cap
 const authRouter = express.Router();
 
 authRouter.use(bodyParser.json());
