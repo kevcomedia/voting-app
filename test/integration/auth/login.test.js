@@ -42,10 +42,10 @@ describe('User login', function() {
       .catch(({response}) => {
         expect(response).to.have.status(422);
         expect(response).to.be.a.json;
-        expect(response)
+        expect(response.body)
           .to.have.property('success')
           .that.equals(false);
-        expect(response)
+        expect(response.body)
           .to.have.property('message')
           .that.equals('Incorrect username/password');
         done();
@@ -60,10 +60,10 @@ describe('User login', function() {
       .catch(({response}) => {
         expect(response).to.have.status(422);
         expect(response).to.be.a.json;
-        expect(response)
+        expect(response.body)
           .to.have.property('success')
           .that.equals(false);
-        expect(response)
+        expect(response.body)
           .to.have.property('message')
           .that.equals('Incorrect username/password');
         done();
