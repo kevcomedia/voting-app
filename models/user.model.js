@@ -22,6 +22,10 @@ userSchema.pre('save', function(next) {
   });
 });
 
+userSchema.methods.isCorrectPassword = function(password = '') {
+  return Promise.resolve(bcrypt.compare(password, this.password));
+};
+
 userSchema.statics.createUser = function({username, password} = {}) {
   if (!username) {
     const err = new Error('Username cannot be blank');
@@ -47,6 +51,31 @@ userSchema.statics.createUser = function({username, password} = {}) {
 
     return Promise.resolve(this.create({username, password}));
   });
+};
+
+userSchema.statics.authenticate = function({username, password} = {}) {
+  return this.findOne({username})
+    .then(existingUser => {
+      if (!existingUser) {
+        const err = new Error('Invalid username/password');
+        err.name = 'InvalidCredentialsError';
+        return Promise.reject(err);
+      }
+
+      return Promise.all([
+        existingUser,
+        existingUser.isCorrectPassword(password),
+      ]);
+    })
+    .then(([existingUser, isCorrectPassword]) => {
+      if (!isCorrectPassword) {
+        const err = new Error('Invalid username/password');
+        err.name = 'InvalidCredentialsError';
+        return Promise.reject(err);
+      }
+
+      return Promise.resolve(existingUser);
+    });
 };
 
 module.exports = mongoose.model('User', userSchema);
