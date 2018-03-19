@@ -164,4 +164,46 @@ describe('User model', function() {
         .catch(done);
     });
   });
+
+  describe('User#isCorrectPassword', function() {
+    it("returns true if the password's hash matches with the stored hash", function(done) {
+      const user = new User({
+        username: 'dummy',
+        password: 'sample-password',
+      });
+
+      const stub = sinon.stub(user, 'isCorrectPassword');
+      stub.withArgs('sample-password').resolves(true);
+
+      user
+        .isCorrectPassword('sample-password')
+        .then(result => {
+          expect(result).to.be.true;
+
+          stub.restore();
+          done();
+        })
+        .catch(done);
+    });
+
+    it("returns false if the password's hash doesn't match", function(done) {
+      const user = new User({
+        username: 'dummy',
+        password: 'sample-password',
+      });
+
+      const stub = sinon.stub(user, 'isCorrectPassword');
+      stub.withArgs('wrong-password').resolves(false);
+
+      user
+        .isCorrectPassword('wrong-password')
+        .then(result => {
+          expect(result).to.be.false;
+
+          stub.restore();
+          done();
+        })
+        .catch(done);
+    });
+  });
 });
