@@ -19,7 +19,20 @@ function register(req, res, next) {
 }
 
 function login(req, res, next) {
-  res.status(500).send('Not implemented');
+  const {username, password} = req.body;
+  Promise.all([User.authenticate({username, password}), signJwt({username})])
+    .then(([authenticatedUser, token]) => {
+      res.status(200).json({
+        success: true,
+        message: 'User is logged in',
+        username,
+        token,
+      });
+    })
+    .catch(err => {
+      err.status = 422;
+      next(err);
+    });
 }
 
 // Probably move this to some util directory. That way this can be tested.

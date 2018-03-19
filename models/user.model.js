@@ -57,7 +57,7 @@ userSchema.statics.authenticate = function({username, password} = {}) {
   return this.findOne({username})
     .then(existingUser => {
       if (!existingUser) {
-        const err = new Error('Invalid username/password');
+        const err = new Error('Incorrect username/password');
         err.name = 'InvalidCredentialsError';
         return Promise.reject(err);
       }
@@ -69,7 +69,7 @@ userSchema.statics.authenticate = function({username, password} = {}) {
     })
     .then(([existingUser, isCorrectPassword]) => {
       if (!isCorrectPassword) {
-        const err = new Error('Invalid username/password');
+        const err = new Error('Incorrect username/password');
         err.name = 'InvalidCredentialsError';
         return Promise.reject(err);
       }
