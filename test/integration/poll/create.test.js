@@ -29,6 +29,10 @@ describe('Poll creation', function() {
       .catch(done);
   });
 
+  afterEach(function removeCreatedPolls(done) {
+    Poll.remove({}, done);
+  });
+
   after(function removeCreatedUser(done) {
     User.remove({}, done);
   });
