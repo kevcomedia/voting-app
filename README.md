@@ -1,5 +1,7 @@
 # voting-app
 
+[![Build Status](https://travis-ci.org/kevcomedia/voting-app.svg?branch=develop)](https://travis-ci.org/kevcomedia/voting-app)
+
 freeCodeCamp voting app project
 
 ## User stories
