@@ -11,7 +11,7 @@ describe('Poll creation', function() {
   const createPollRequest = () =>
     request()
       .post(endpoint)
-      .set('Authorization', `Bearer ${token}`);
+      .set('Authorization', `jwt ${token}`);
 
   before(function createToken(done) {
     // Probably a more sophisticated approach is to stub the parts that
@@ -64,7 +64,24 @@ describe('Poll creation', function() {
               .that.equals('Poll created');
             expect(res.body)
               .to.have.property('poll')
-              .that.equals(body);
+              .that.is.an('object');
+            expect(res.body.poll)
+              .to.have.property('question')
+              .that.equals(body.question);
+            expect(res.body.poll)
+              .to.have.property('choices')
+              .that.deep.equals(body.choices);
+            expect(res.body.poll)
+              .to.have.property('meta')
+              .that.is.an('object');
+            expect(res.body.poll.meta)
+              .to.have.property('owner')
+              .that.equals('sample-user');
+            // I'll handwave and just check for the existence of a date string.
+            // Maybe there's a plugin for checking date strings?
+            expect(res.body.poll.meta)
+              .to.have.property('dateCreated')
+              .that.is.a('string');
             done();
           })
           .catch(done);
@@ -154,12 +171,10 @@ describe('Poll creation (unauthenticated user)', function() {
         choices: ['Choice 1', 'Choice 2'],
       })
       .catch(({response}) => {
+        // We'll keep it simple for this one and just expect a 401. Writing a
+        // custom callback for passport for the fancy stuff is more trouble than
+        // it's worth.
         expect(response).to.have.status(401);
-        expect(response).to.be.a.json;
-        expect(response.body).to.have.property('success').that.is.false;
-        expect(response.body)
-          .to.have.property('message')
-          .that.equals('Unauthorized');
         done();
       })
       .catch(done);

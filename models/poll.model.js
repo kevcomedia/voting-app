@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
+const {ObjectId} = Schema.Types;
 
 const pollSchema = new Schema({
   question: {
@@ -14,16 +15,16 @@ const pollSchema = new Schema({
       },
       voters: [
         {
-          // Use a ref to a User document later
-          type: String,
-          required: true,
+          type: ObjectId,
+          ref: 'User',
         },
       ],
     },
   ],
   meta: {
     owner: {
-      // Use a ref to a User document later
+      // Let's keep it simple for now; just store the username of the poll
+      // owner. We'll look at refs later.
       type: String,
       required: true,
     },
