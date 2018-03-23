@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
+const {ObjectId} = Schema.Types;
 
 const pollSchema = new Schema({
   question: {
@@ -14,18 +15,17 @@ const pollSchema = new Schema({
       },
       voters: [
         {
-          // Use a ref to a User document later
-          type: String,
-          required: true,
+          type: ObjectId,
+          ref: 'User',
         },
       ],
     },
   ],
   meta: {
     owner: {
-      // Use a ref to a User document later
-      type: String,
+      type: ObjectId,
       required: true,
+      ref: 'User',
     },
     dateCreated: {
       type: Date,
@@ -33,5 +33,12 @@ const pollSchema = new Schema({
     },
   },
 });
+
+// When creating Poll documents, just give the `choices` field an array of
+// string labels. This setter will convert it to the expected array of
+// subdocuments.
+pollSchema
+  .path('choices')
+  .set(choiceLabels => choiceLabels.map(label => ({label})));
 
 module.exports = mongoose.model('Poll', pollSchema);
