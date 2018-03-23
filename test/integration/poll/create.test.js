@@ -160,22 +160,33 @@ describe('Poll creation', function() {
     });
   });
 
-  it("doesn't create a poll with a blank choice", function(done) {
-    createPollRequest()
-      .send({
-        question: 'Example poll with missing choice',
-        choices: ['', 'Choice 2'],
-      })
-      .catch(({response}) => {
-        expect(response).to.have.status(422);
-        expect(response).to.be.a.json;
-        expect(response.body).to.have.property('success').that.is.false;
-        expect(response.body)
-          .to.have.property('message')
-          .that.equals('Choices cannot be blank');
-        done();
-      })
-      .catch(done);
+  describe('Polls with blank choices', function() {
+    const cases = ['', ' ', '  ', null];
+    cases.forEach(c => {
+      it(`doesn't create a poll when a choice is ${JSON.stringify(
+        c
+      )}`, function(done) {
+        createPollRequest()
+          .send({
+            question: 'Example poll with missing choice',
+            choices: [c, 'Choice 2'],
+          })
+          .then(res => {
+            expect(res).to.not.exist;
+            done();
+          })
+          .catch(({response}) => {
+            expect(response).to.have.status(422);
+            expect(response).to.be.a.json;
+            expect(response.body).to.have.property('success').that.is.false;
+            expect(response.body)
+              .to.have.property('message')
+              .that.equals('Choices cannot be blank');
+            done();
+          })
+          .catch(done);
+      });
+    });
   });
 });
 
