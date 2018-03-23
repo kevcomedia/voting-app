@@ -131,22 +131,31 @@ describe('Poll creation', function() {
     });
   });
 
-  it("doesn't create a poll with no question", function(done) {
-    createPollRequest()
-      .send({
-        question: '', // or null? or just whitespace?
-        choices: ['Choice 1', 'Choice 2'],
-      })
-      .catch(({response}) => {
-        expect(response).to.have.status(422);
-        expect(response).to.be.a.json;
-        expect(response.body).to.have.property('success').that.is.false;
-        expect(response.body)
-          .to.have.property('message')
-          .that.equals('There should be a question');
-        done();
-      })
-      .catch(done);
+  describe('Polls with blank questions', function() {
+    const cases = ['', ' ', '  ', null];
+    cases.forEach(c => {
+      it(`doesn't create a poll if the question is "${c}"`, function(done) {
+        createPollRequest()
+          .send({
+            question: c, // or null? or just whitespace?
+            choices: ['Choice 1', 'Choice 2'],
+          })
+          .then(res => {
+            expect(res).to.not.exist;
+            done();
+          })
+          .catch(({response}) => {
+            expect(response).to.have.status(422);
+            expect(response).to.be.a.json;
+            expect(response.body).to.have.property('success').that.is.false;
+            expect(response.body)
+              .to.have.property('message')
+              .that.equals('There should be a question');
+            done();
+          })
+          .catch(done);
+      });
+    });
   });
 
   it("doesn't create a poll with a blank choice", function(done) {
