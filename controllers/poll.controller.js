@@ -1,5 +1,5 @@
 const {check, validationResult} = require('express-validator/check');
-const {matchedData, sanitize} = require('express-validator/filter');
+const {matchedData} = require('express-validator/filter');
 const Poll = require('../models/poll.model');
 
 const create = [
