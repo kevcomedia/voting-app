@@ -134,7 +134,9 @@ describe('Poll creation', function() {
   describe('Polls with blank questions', function() {
     const cases = ['', ' ', '  ', null];
     cases.forEach(c => {
-      it(`doesn't create a poll if the question is "${c}"`, function(done) {
+      it(`doesn't create a poll if the question is ${JSON.stringify(
+        c
+      )}`, function(done) {
         createPollRequest()
           .send({
             question: c, // or null? or just whitespace?
