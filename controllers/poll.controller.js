@@ -23,22 +23,15 @@ function create(req, res, next) {
 
   Poll.create({
     question,
-    choices: choices.map(choice => ({
-      label: choice,
-    })),
-    meta: {
-      owner: req.user.username,
-    },
+    choices: choices.map(choice => ({label: choice})),
+    meta: {owner: req.user.id},
   })
+    .then(poll => Poll.populate(poll, {path: 'meta.owner', select: 'username'}))
     .then(poll => {
       res.status(201).json({
         success: true,
         message: 'Poll created',
-        poll: {
-          question: poll.question,
-          choices: poll.choices.map(choice => choice.label),
-          meta: poll.meta,
-        },
+        poll,
       });
     })
     .catch(next);

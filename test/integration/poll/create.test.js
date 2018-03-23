@@ -74,13 +74,15 @@ describe('Poll creation', function() {
               .that.equals(body.question);
             expect(res.body.poll)
               .to.have.property('choices')
-              .that.deep.equals(body.choices);
+              .that.is.an('array')
+              .with.lengthOf(body.choices.length);
             expect(res.body.poll)
               .to.have.property('meta')
               .that.is.an('object');
             expect(res.body.poll.meta)
               .to.have.property('owner')
-              .that.equals('sample-user');
+              .that.is.an('object')
+              .that.includes({username: 'sample-user'});
             // I'll handwave and just check for the existence of a date string.
             // Maybe there's a plugin for checking date strings?
             expect(res.body.poll.meta)

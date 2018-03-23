@@ -23,10 +23,9 @@ const pollSchema = new Schema({
   ],
   meta: {
     owner: {
-      // Let's keep it simple for now; just store the username of the poll
-      // owner. We'll look at refs later.
-      type: String,
+      type: ObjectId,
       required: true,
+      ref: 'User',
     },
     dateCreated: {
       type: Date,
