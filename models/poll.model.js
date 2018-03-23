@@ -34,4 +34,11 @@ const pollSchema = new Schema({
   },
 });
 
+// When creating Poll documents, just give the `choices` field an array of
+// string labels. This setter will convert it to the expected array of
+// subdocuments.
+pollSchema
+  .path('choices')
+  .set(choiceLabels => choiceLabels.map(label => ({label})));
+
 module.exports = mongoose.model('Poll', pollSchema);

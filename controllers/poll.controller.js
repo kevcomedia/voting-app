@@ -33,7 +33,7 @@ const create = [
 
     Poll.create({
       question,
-      choices: choices.map(choice => ({label: choice})),
+      choices,
       meta: {owner: req.user.id},
     })
       .then(poll =>
