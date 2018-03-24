@@ -49,7 +49,7 @@ describe('Poll deletion', function() {
 
   it('deletes the poll with the given id', function(done) {
     request()
-      .delete(`/api/v1/polls/${poll.id}`)
+      .delete(`/api/v1/polls/${poll._id}`)
       .set('Authorization', `jwt ${token}`)
       .then(res => {
         expect(res).to.have.status(200);
@@ -57,7 +57,7 @@ describe('Poll deletion', function() {
         expect(res.body).to.have.property('success').that.is.true;
         expect(res.body)
           .to.have.property('message')
-          .that.equals(`Poll '${poll.id}' has been deleted`);
+          .that.equals(`Poll '${poll._id}' has been deleted`);
         done();
       })
       .catch(done);
@@ -78,6 +78,7 @@ describe('Poll deletion', function() {
         expect(response.body)
           .to.have.property('message')
           .that.equals("Poll 'fake-id-123' not found");
+        done();
       })
       .catch(done);
   });
