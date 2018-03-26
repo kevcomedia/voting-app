@@ -51,9 +51,17 @@ const create = [
 ];
 
 const deletePoll = [
-  check('_id')
-    .isMongoId()
-    .withMessage(value => `Poll '${value}' not found`),
+  [
+    check('_id', id => `Poll '${id}' not found`)
+      .isMongoId()
+      .custom(id =>
+        Poll.findById(id).then(poll => {
+          if (!poll) {
+            Promise.reject(false);
+          }
+        })
+      ),
+  ],
   function deletePoll(req, res, next) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -66,12 +74,6 @@ const deletePoll = [
 
     Poll.remove({_id})
       .then(result => {
-        if (!result.n) {
-          const err = new Error(`Poll '${_id}' not found`);
-          err.status = 404;
-          throw err;
-        }
-
         res.json({
           success: true,
           message: `Poll '${_id}' has been deleted`,
